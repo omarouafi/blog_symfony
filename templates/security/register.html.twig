@@ -3,16 +3,42 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
 
 
-    <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="_username" value="{{ email }}" required autofocus>
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+<div class="auth-container">
+    <form method="post" action="/auth/register" class="auth-block">
+        <div class="auth-header">
+            <h1>S'inscrire</h1>
+            <p>Veuillez entrer vos informations pour créer votre compte.</p>
+        </div>
+        <div class="d-flex">
+            <div class="form-block mr">
+                <label for="nom">Nom:</label>
+                <input class="form-input" type="text" id="nom" name="nom" value="{{ nom }}" required autofocus>
+            </div>
+            <div class="form-block">
+                <label for="prenom">Prenom:</label>
+                <input class="form-input" type="text" id="prenom" name="prenom" value="{{ prenom }}" required autofocus>
+            </div>
+        </div>
+        <div class="form-block">
+            <label for="username">Email:</label>
+            <input class="form-input" type="text" id="email" name="email" value="{{ email }}" required autofocus>
+        </div>
+        <div class="form-block">
+            <label for="password">Mot de passe:</label>
+            <input class="form-input" type="password" id="password" name="password" required>
+        </div>
+        <div class="form-block mt">
+            <button class="btn btn-primary" type="submit">Allons-y</button>
+        </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password" required>
-
-        <button type="submit">Login</button>
+        <div class="auth-footer">
+            Déjà inscrit ? <a href="/auth/login">Connectez-vous !</a>
+        </div>
     </form>
+</div>
 {% endblock %}

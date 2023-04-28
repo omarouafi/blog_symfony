@@ -39,6 +39,19 @@ class ArticleRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllWithAuthorCommentsTags(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.author', 'u')
+            ->leftJoin('a.comment', 'c')
+            ->leftJoin('a.tags', 't')
+            ->addSelect('u')
+            ->addSelect('c')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Article[] Returns an array of Article objects
 //     */

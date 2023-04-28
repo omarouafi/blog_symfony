@@ -21,6 +21,18 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
+    public function findAllWithArticleAndAuthor()
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.article_id', 'a')
+            ->leftJoin('c.author', 'u')
+            ->addSelect('a')
+            ->addSelect('u')
+            ->getQuery()
+            ->getResult();
+    }
+
+
     public function save(Comment $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

@@ -80,4 +80,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function isResetTokenValid(string $token): bool
+{
+    // Find the user with the given reset token
+    $user = $this->findOneBy(['resetToken' => $token]);
+
+    // If the user is not found or the reset token has expired, return false
+    if (!$user || $user->getTokenExpiration() < new \DateTime()) {
+        return false;
+    }
+
+    return true;
+}
 }

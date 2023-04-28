@@ -25,8 +25,10 @@ class Article
     #[ORM\Column]
     private ?int $status = null;
 
-    #[ORM\Column]
-    private ?int $author_id = null;
+  
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "author_id", referencedColumnName: "id")]
+    private ?User $author = null;
 
     #[ORM\OneToMany(mappedBy: 'article_id', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comment;
@@ -81,17 +83,18 @@ class Article
         return $this;
     }
 
-    public function getAuthorId(): ?int
+    public function getAuthor(): ?User
     {
-        return $this->author_id;
+        return $this->author;
     }
 
-    public function setAuthorId(int $author_id): self
+    public function setAuthor(?User $author): self
     {
-        $this->author_id = $author_id;
+        $this->author = $author;
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Comment>

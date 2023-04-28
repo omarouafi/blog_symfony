@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation de mot de passe{% endblock %}
+
+{% block body %}
+
+{% if error %}
+
+<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+<div class="auth-container">
+    <form method="post" class="auth-block">
+        <div class="auth-header">
+            <h1>Réinitialisation de mot de passe</h1>
+            <p>Veuillez entrer votre nouveau mot de passe.</p>
+        </div>
+        <div class="form-block">
+            <label for="password">Nouveau mot de passe:</label>
+            <input class="form-input" type="password" id="password" name="password" required>
+        </div>
+        <div class="form-block">
+            <label for="password_confirm">Confirmez le nouveau mot de passe:</label>
+            <input class="form-input" type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <div class="form-block">
+            <button class="btn btn-primary" type="submit">Enregistrer</button>
+        </div>
+        <div class="auth-footer">
+            Retour à <a href="/auth/login">la page de connexion</a>.
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<h1>Welcome</h1>
+
+{% if app.request.attributes.has('user') %}
+<h1>{{ app.request.attributes.get('user').prenom }} {{ app.request.attributes.get('user').nom }}</h1>
+{% endif %}
+
+{% endblock %}

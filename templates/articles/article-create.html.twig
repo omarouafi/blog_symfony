@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
+
+<div class="article-container">
+
+
+    <h1>Create a new article</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="/article/create">
+        <div class="form-block">
+            <label for="title">Title:</label>
+            <input class="form-input" type="text" id="title" name="title" value="{{ title }}" required autofocus>
+        </div>
+        <div class="form-block">
+            <label for="markdown-editor">Content:</label>
+            <textarea class="form-input" id="markdown-editor" name="content_text" required></textarea>
+        </div>
+        <div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+        <textarea name="content" hidden id="markdown-html" id="" cols="30" rows="10"></textarea>
+    </form>
+
+    <div>
+        <h2>Preview</h2>
+        <div id="markdown-preview"></div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.0/marked.min.js"></script>
+<script>
+    const editor = document.getElementById('markdown-editor');
+    const preview = document.getElementById('markdown-preview');
+    const content = document.getElementById('markdown-html');
+
+    editor.addEventListener('input', function () {
+        const markdown = editor.value;
+        const html = marked(markdown);
+        preview.innerHTML = html;
+        content.innerHTML = html;
+    });
+</script>
+{% endblock %}
