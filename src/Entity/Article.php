@@ -152,4 +152,17 @@ class Article
 
         return $this;
     }
+    public function setTags(Collection $tags): self
+    {
+        $article_tags = $this->getTags();
+        foreach ($article_tags as $tag) {
+            $tag->removeArticle($this);
+        }
+        
+        foreach ($tags as $tag) {
+            $tag->addArticle($this);
+        }
+        
+        return $this;
+    }
 }

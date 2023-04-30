@@ -4,7 +4,9 @@
 namespace App\EventListener;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -21,10 +23,12 @@ class JwtUserListener
     {
         try{
 
+        $request = $event->getRequest();        
+        if (strpos($request->getRequestUri(),'auth') !== false  ) {
+            return;
+        }
         
-        $request = $event->getRequest();
         $cookie = $request->cookies->get('BEARER');
-
         if ($cookie) {
             $data = $this->jwtEncoder->decode($cookie);
             $user['id'] = $data['id'];
@@ -33,9 +37,13 @@ class JwtUserListener
             $user['email'] = $data['username'];
             $user['roles'] = $data['roles'];
             $request->attributes->set('user', $user);
+        }else{
+            $response = new RedirectResponse('/auth/login');
+            $event->setResponse($response);
         }
     }catch( \Exception $e){
-        return;
+        $response = new RedirectResponse('/auth/login');
+        $event->setResponse($response);
     }
     }
 }

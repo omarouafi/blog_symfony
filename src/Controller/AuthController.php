@@ -109,7 +109,7 @@ class AuthController extends AbstractController
         
     }
        /**
-     * @Route("/register", name="create_user", methods={"POST"})
+     * @Route("/register", name="register_user", methods={"POST"})
      */
     public function create_user(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager,JWTTokenManagerInterface $JWTManager, UserRepository $userRepository): Response
     {
@@ -310,8 +310,21 @@ public function resetPassword_post(Request $request, UserRepository $userReposit
         
     }
 
-      /**
-     * @Route("/reset", name="reset", methods={"GET"})
-     */
-   
+    /**
+    * @Route("/logout", name="logout_password", methods={"GET"})
+    */
+    public function logout(Request $request): Response
+    {
+      
+        $response = new RedirectResponse("/auth/login");
+        $response->headers->setCookie(
+                new Cookie(
+                    "BEARER",
+                    null,
+                    new \DateTime("-1 day"),
+                )
+            );
+        return $response;
+    }
+
 }

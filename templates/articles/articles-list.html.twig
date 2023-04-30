@@ -3,19 +3,20 @@
 {% block title %}Article List{% endblock %}
 
 {% block body %}
-        <link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
 
-    <h1>Article List</h1>
-    {% for article in articles %}
-    <div class="article">
+<h1>Article List</h1>
+{% for article in articles %}
+<div class="article">
     <h2>{{ article.title }}</h2>
     <p>{{ article.content|raw }}</p>
-    <p>{{ article.getAuthor().getNom()  }}</p>
-    <p>{{ article.getAuthor().getPrenom()  }}</p>
+    <p>{{ article.getAuthor().getNom() }}</p>
+    <p>{{ article.getAuthor().getPrenom() }}</p>
     {% for comment in article.getComment() %}
-        <p>{{comment.getContent()}} by {{comment.getAuthor().getNom()}}</p>
+    <p>{{comment.getContent()}} by {{comment.getAuthor().getNom()}}</p>
     {% endfor %}
-    </div>
-    {% endfor %}
+    <a href="/articles/{{ article.id }}">View</a>
+</div>
+{% endfor %}
 
 {% endblock %}

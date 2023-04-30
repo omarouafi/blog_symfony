@@ -3,29 +3,42 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-    <h1>{{ article.title }}</h1>
-    <div class="article">
-        <p>{{ article.content|raw }}</p>
-        <p>Author: {{ article.getAuthor().getNom() }}</p>
-        <p>Comments:</p>
-        {% for comment in article.getComment() %}
-            <div class="comment">
-                <p>{{ comment.content }}</p>
-                <p>Author: {{ comment.getAuthor().getNom() }}</p>
-            </div>
-        {% endfor %}
-         {% for tag in article.getTags() %}
-            <div class="comment">
-                <p>{{ tag.mot }}</p>
-            </div>
-        {% endfor %}
-        <hr>
-        <h2>Commentez!</h2>
-        <form action="/article/{{article.id}}/comment" method="POST">
-            <div>
-                <textarea id="content" name="comment_content" required></textarea>
-            </div>
-            <button type="submit">Add comment</button>
-        </form>
+<h1>{{ article.title }}</h1>
+<div class="article">
+    <p>{{ article.content|raw }}</p>
+    <p>Author: {{ article.getAuthor().getNom() }}</p>
+    <p>Comments:</p>
+    {% for comment in article.getComment() %}
+    <div class="comment">
+        <p>{{ comment.content }}</p>
+        <p>Author: {{ comment.getAuthor().getNom() }}</p>
     </div>
+    {% endfor %}
+    {% for tag in article.getTags() %}
+    <div class="comment">
+        <p>{{ tag.mot }}</p>
+    </div>
+    {% endfor %}
+    <hr>
+    <h2>Commentez!</h2>
+    <form action="/article/{{article.id}}/comment" method="POST">
+        <div>
+            <textarea id="content" name="comment_content" required></textarea>
+        </div>
+        <button type="submit">Add comment</button>
+    </form>
+    <div>
+        {% for comment in article.getComment() %}
+        <p>{{comment.getContent()}} by {{comment.getAuthor().getNom()}}</p>
+        {% if comment.getAuthor().getId() == app.request.attributes.get('user').id %}
+        <a href="/comment/{{comment.id}}/supprimer">Supprimer</a>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if article.getAuthor().getId() == app.request.attributes.get('user').id %}
+    <a href="/article/{{article.id}}/supprimer">Supprimer</a>
+    <a href="/article/{{article.id}}/modifier">Modifier</a>
+    {% endif %}
+</div>
 {% endblock %}
