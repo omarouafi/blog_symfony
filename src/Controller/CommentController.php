@@ -24,7 +24,7 @@ class CommentController extends AbstractController
     }
 
       /**
-    * @Route("/comment/{id}/supprimer", name="comment_supprimer", methods={"GET"})
+    * @Route("/comment/{id}/supprimer", name="user_mon_comment_supprimer", methods={"GET"})
     */
     public function delete(Request $request, CommentRepository $commentRepository): Response
     {

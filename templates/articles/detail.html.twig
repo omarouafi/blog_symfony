@@ -20,6 +20,8 @@
     </div>
     {% endfor %}
     <hr>
+    {%  if app.request.attributes.get('user') is not null %}
+
     <h2>Commentez!</h2>
     <form action="/article/{{article.id}}/comment" method="POST">
         <div>
@@ -27,16 +29,19 @@
         </div>
         <button type="submit">Add comment</button>
     </form>
+    {% endif %}
     <div>
         {% for comment in article.getComment() %}
         <p>{{comment.getContent()}} by {{comment.getAuthor().getNom()}}</p>
-        {% if comment.getAuthor().getId() == app.request.attributes.get('user').id %}
+        {% if app.request.attributes.get('user') is not null and comment.getAuthor().getId() ==
+        app.request.attributes.get('user').id
+        %}
         <a href="/comment/{{comment.id}}/supprimer">Supprimer</a>
         {% endif %}
         {% endfor %}
     </div>
 
-    {% if article.getAuthor().getId() == app.request.attributes.get('user').id %}
+    {% if app.request.attributes.get('user') is not null and article.getAuthor().getId() == app.request.attributes.get('user').id %}
     <a href="/article/{{article.id}}/supprimer">Supprimer</a>
     <a href="/article/{{article.id}}/modifier">Modifier</a>
     {% endif %}

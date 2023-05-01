@@ -15,13 +15,10 @@ class HomeController extends AbstractController
 {
     
      /**
-     * @Route("/home", name="home")
+     * @Route("/", name="home")
     */
     public function index(Request $request,CustomAuthenticator $auth): Response
     {
-        $cookie = $request->cookies->get('BEARER');
-        return $this->render('main/home.html.twig', [
-            
-        ]);
+       return $this->redirectToRoute('list_articles');
     }
 }

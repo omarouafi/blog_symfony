@@ -31,7 +31,7 @@ class ArticleController extends AbstractController
         ]);
     }
    /**
-     * @Route("/article/create", name="create_articles", methods={"GET"})
+     * @Route("/article/create", name="user_create_articles", methods={"GET"})
     */
     public function new(Request $request,CustomAuthenticator $auth,TagRepository $tagRepository, ArticleRepository $articleRepository): Response
     {
@@ -46,7 +46,7 @@ class ArticleController extends AbstractController
         ]);
     }
    /**
-     * @Route("/article/create", name="create_articles_post", methods={"POST"})
+     * @Route("/article/create", name="user_create_articles_post", methods={"POST"})
     */
     public function new_post(Request $request,UserRepository $userRepository,TagRepository $tagRepository, ArticleRepository $articleRepository): Response
     {
@@ -100,7 +100,7 @@ class ArticleController extends AbstractController
         ]);
     }
    /**
- * @Route("/article/{id}/comment", name="article_commenter")
+ * @Route("/article/{id}/comment", name="user_article_commenter")
  */
     public function article_commenter(Request $request ,Article $article, UserRepository $userRepository,CommentRepository $commentRepository,)
     {
@@ -119,7 +119,7 @@ class ArticleController extends AbstractController
         
     }
    /**
- * @Route("/article/{id}/modifier", name="article_modifier", methods={"GET"})
+ * @Route("/article/{id}/modifier", name="user_mon_article_modifier", methods={"GET"})
  */
     public function article_modifier(Request $request ,Article $article, TagRepository $tagRepository)
     {
@@ -135,7 +135,7 @@ class ArticleController extends AbstractController
         ]);
     }
    /**
- * @Route("/article/{id}/modifier", name="article_modifier_post", methods={"POST"})
+ * @Route("/article/{id}/modifier", name="user_mon_article_modifier_post", methods={"POST"})
  */
 public function article_modifier_post(Request $request ,Article $article,ArticleRepository $articleRepository, TagRepository $tagRepository)
 {
@@ -158,11 +158,10 @@ public function article_modifier_post(Request $request ,Article $article,Article
     return $this->redirectToRoute('article_detail', ['id' => $article->getId()]);
 }
    /**
- * @Route("/article/{id}/supprimer", name="article_supprimer", methods={"GET"})
+ * @Route("/article/{id}/supprimer", name="user_mon_article_supprimer", methods={"GET"})
  */
     public function article_supprimer(Request $request ,Article $article,ArticleRepository $articleRepository)
     {
-
         $articleRepository->remove($article, true);
         return $this->redirectToRoute('articles');        
     }

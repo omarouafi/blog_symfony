@@ -19,13 +19,13 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
    /**
-     * @Route("/auth", name="auth")
+     * @Route("/auth", name="authen")
     */
 class AuthController extends AbstractController
 {
    
     /**
-     * @Route("/login", name="login", methods={"GET"})
+     * @Route("/login", name="auth_login", methods={"GET"})
     */
     public function login(Request $request): Response
     {
@@ -75,7 +75,7 @@ class AuthController extends AbstractController
 
         $token = $JWTManager->createFromPayload($user,$userData);
 
-        $response = new RedirectResponse('/home');
+        $response = new RedirectResponse('/');
         
         $response->headers->setCookie(
             new Cookie(
@@ -174,7 +174,7 @@ class AuthController extends AbstractController
 
         $token = $JWTManager->createFromPayload($user,$userData);
     
-        $response = new RedirectResponse("/home");
+        $response = new RedirectResponse("/");
         $response->headers->setCookie(
                 new Cookie(
                     "BEARER",
@@ -311,7 +311,7 @@ public function resetPassword_post(Request $request, UserRepository $userReposit
     }
 
     /**
-    * @Route("/logout", name="logout_password", methods={"GET"})
+    * @Route("/logout", name="user_logout", methods={"GET"})
     */
     public function logout(Request $request): Response
     {
@@ -326,5 +326,8 @@ public function resetPassword_post(Request $request, UserRepository $userReposit
             );
         return $response;
     }
+
+
+  
 
 }

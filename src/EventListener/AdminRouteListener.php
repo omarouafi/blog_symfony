@@ -23,7 +23,7 @@ class AdminRouteListener implements EventSubscriberInterface
         $isAdminRoute = strpos($routeName, 'admin') !== false;
         if ($isAdminRoute) {
             $user = $request->attributes->get('user');
-            if (!$user || in_array('ROLE_ADMIN',$user['roles'])) {
+            if (!$user || !in_array('ROLE_ADMIN',$user['roles'])) {
                 throw new AccessDeniedHttpException('Vous n\'avez pas les droits pour accéder à cette page');
             }
         }
