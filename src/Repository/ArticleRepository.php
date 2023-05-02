@@ -51,6 +51,18 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function searchByTitleContentAuthor(string $query)
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.author', 'u')
+            ->leftJoin('a.comment', 'c')
+            ->leftJoin('a.tags', 't')
+            ->where('a.title LIKE :query OR a.content LIKE :query OR u.nom LIKE :query OR u.prenom LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 //    /**
 //     * @return Article[] Returns an array of Article objects

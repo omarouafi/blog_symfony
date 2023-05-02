@@ -29,7 +29,7 @@ class CustomAuthenticator
         
         $user = new User(); 
         $user->setEmail($token->email); 
-        $user->setRoles($token->roles); 
+        $user->setRole($token->role); 
         
         return $user;
     }

@@ -34,9 +34,9 @@ class JwtAuthenticator
         
         $user = new User(); // Replace with your User class
         $user->setEmail($token->email); // Replace with your user data
-        $user->setRoles($token->roles); // Replace with your user data
+        $user->setRole($token->role); // Replace with your user data
         
-        return new UsernamePasswordToken($user, $tokenString, 'jwt', $user->getRoles());
+        return new UsernamePasswordToken($user, $tokenString, 'jwt', $user->getRole());
     }
     
   

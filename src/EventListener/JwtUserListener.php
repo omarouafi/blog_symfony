@@ -48,16 +48,16 @@ class JwtUserListener implements EventSubscriberInterface
         if ($cookie) {
             $data = $this->jwtEncoder->decode($cookie);
             $user['id'] = $data['id'];
-            $updated_user = $this->userRepository->find($user['id']);
+            $updated_user = $this->userRepository->findOneWithRoles($user['id']);
             $user['nom'] = $updated_user->getNom();
             $user['prenom'] = $updated_user->getPrenom();
             $user['email'] = $updated_user->getEmail();
-            $user['roles'] = $updated_user->getRoles();
+            $user['role'] = $updated_user->getRole();
             $request->attributes->set('user', $user);
+            
         }else {
             
             if($user_protected !== false){
-
                 $response = new RedirectResponse('/auth/login');
                 $event->setResponse($response);
             }else{
@@ -66,6 +66,7 @@ class JwtUserListener implements EventSubscriberInterface
         }
     }catch( \Exception $e){
         if($user_protected !== false){
+            
             $response = new RedirectResponse('/auth/login');
             $event->setResponse($response);
         }else{

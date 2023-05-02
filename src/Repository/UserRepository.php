@@ -93,4 +93,15 @@ public function isResetTokenValid(string $token): bool
 
     return true;
 }
+
+    public function findOneWithRoles(int $id): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
+            ->leftJoin('u.role', 'r')
+            ->addSelect('r')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

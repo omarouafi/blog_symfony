@@ -19,13 +19,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends AbstractController
 {
-   /**
-     * @Route("/articles", name="list_articles", methods={"GET"})
+    /**
+    * @Route("/articles", name="list_articles", methods={"GET"})
     */
-    public function index(Request $request,CustomAuthenticator $auth, ArticleRepository $articleRepository): Response
+    public function index(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository): Response
     {
-        $articles = $articleRepository->findAllWithAuthorCommentsTags();
-        
+        $query = $request->query->get('q');
+        if ($query) {
+            $articles = $articleRepository->searchByTitleContentAuthor($query);
+        } else {
+            $articles = $articleRepository->findAllWithAuthorCommentsTags();
+        }
+
         return $this->render('articles/articles-list.html.twig', [
             'articles' => $articles,
         ]);

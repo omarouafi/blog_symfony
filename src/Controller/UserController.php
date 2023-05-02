@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -37,7 +39,6 @@ class UserController extends AbstractController
         $user = $request->attributes->get('user');
         $id = $user['id'];
         $user = $userRepository->find($id);
-        $user->setRoles([$request->get('role')]);
         $user->setNom($request->get('nom'));
         $user->setPrenom($request->get('prenom')); 
         $userRepository->save($user,true);
@@ -144,11 +145,13 @@ class UserController extends AbstractController
     /**
       * @Route("/admin/user/{id}/edit", name="admin_edit_user", methods={"POST"})
       */
-    public function edit_user(UserRepository $userRepository, $id, Request $request): Response
+    public function edit_user(UserRepository $userRepository, $id, Request $request,RoleRepository $roleRepository): Response
     {
         try{
         $user = $userRepository->find($id);
-        $user->setRoles([$request->get('role')]);
+        $role_id = $request->get('role');
+        $role = $roleRepository->find($role_id);
+        $user->setRole($role);
         $user->setNom($request->get('nom'));
         $user->setPrenom($request->get('prenom'));        
         $userRepository->save($user);
@@ -209,4 +212,32 @@ class UserController extends AbstractController
             return $this->redirectToRoute("admin_show_user",["id"=>$id]);
         }
     }
+
+    /** 
+        * @Route("/admin/user/add-user", name="admin_add_account", methods={"POST"})
+        */
+    public function add_account(UserRepository $userRepository, Request $request,UserPasswordHasherInterface $passwordEncoder, RoleRepository $roleRepository): Response
+    {
+        try{
+        $user_email_exist = $userRepository->findOneBy(['email' => $request->get('email')]);
+        if($user_email_exist){
+            $this->addFlash('error', 'Cet email est déjà utilisé');
+            return $this->redirectToRoute("admin_list_users");
+        }
+        $user = new User();
+        $user->setEmail($request->get('email'));
+        $role_id = $request->get('role');
+        $role = $roleRepository->find($role_id);
+        $user->setRole($role);
+        $user->setNom($request->get('nom'));
+        $user->setPrenom($request->get('prenom'));
+        $user->setPassword($passwordEncoder->hashPassword($user, $request->get('password')));
+        $userRepository->save($user);
+        return $this->redirectToRoute("admin_list_users");
+        }catch(\Exception $e){
+            $this->addFlash('error', 'Une erreur est survenue');
+            return $this->redirectToRoute("admin_list_users");
+        }
+    }
+
 }

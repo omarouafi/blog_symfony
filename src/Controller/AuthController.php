@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -70,7 +71,7 @@ class AuthController extends AbstractController
             'email' => $user->getEmail(),
             'nom' => $user->getNom(),
             'prenom' => $user->getPrenom(),
-            'roles' => $user->getRoles(), 
+            'role' => $user->getRole(), 
         ];
 
         $token = $JWTManager->createFromPayload($user,$userData);
@@ -109,9 +110,9 @@ class AuthController extends AbstractController
         
     }
        /**
-     * @Route("/register", name="register_user", methods={"POST"})
+     * @Route("/register", name="register_account", methods={"POST"})
      */
-    public function create_user(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager,JWTTokenManagerInterface $JWTManager, UserRepository $userRepository): Response
+    public function create_user(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager,JWTTokenManagerInterface $JWTManager, UserRepository $userRepository, RoleRepository $roleRepository): Response
     {
         
         $nom = "";
@@ -156,7 +157,8 @@ class AuthController extends AbstractController
         $user->setNom($nom);
         $user->setPrenom($prenom);
         $user->setEmail($email);
-        $user->setRoles(['ROLE_USER']);
+        $role = $roleRepository->findOneBy(['label' => 'user']);
+        $user->setRole($role);
         $hashedPassword = $passwordHasher->hashPassword($user, $password);
 
         $user->setPassword($hashedPassword);
@@ -169,7 +171,7 @@ class AuthController extends AbstractController
             'email' => $user->getEmail(),
             'nom' => $user->getNom(),
             'prenom' => $user->getPrenom(),
-            'roles' => $user->getRoles(), 
+            'role' => $user->getRole(), 
         ];
 
         $token = $JWTManager->createFromPayload($user,$userData);
@@ -185,6 +187,7 @@ class AuthController extends AbstractController
         return $response;
 
         }catch(Exception $e){
+            dd($e);
             return $this->render('security/register.html.twig', [
                 'error' => $e->getMessage(),
                 'nom' => $nom,
