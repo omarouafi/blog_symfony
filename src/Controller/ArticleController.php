@@ -40,6 +40,8 @@ class ArticleController extends AbstractController
             
         );
 
+        
+
         return $this->render('articles/articles-list.html.twig', [
             'articles' => $articles,
         ]);

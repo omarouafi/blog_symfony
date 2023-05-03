@@ -53,6 +53,7 @@ class JwtUserListener implements EventSubscriberInterface
             $user['prenom'] = $updated_user->getPrenom();
             $user['email'] = $updated_user->getEmail();
             $user['role'] = $updated_user->getRole();
+            $user['photo'] = $updated_user->getPhoto();
             $request->attributes->set('user', $user);
             
             

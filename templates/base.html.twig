@@ -24,32 +24,44 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Castoro+Titling&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
 </head>
 
-<body class="container">
+<body>
     <header>
         <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/articles">Articles</a></li>
-                {% if app.request.attributes.get('user') %}
-                <li><a href="/article/create">Create Article</a></li>
-                {% if app.request.attributes.get('user').role.label == 'admin'%}
-                <li><a href="/admin/users">Users</a></li>
-                {% endif %} 
-                <li><a href="/profile">Profile</a></li>
-                <li><a href="/auth/logout">Logout</a></li>
+            <div class="menu-logo">
+                <a href="/articles">B - AMU</a></li>
+            </div>
 
-                {% else %}
-                <li><a href="/auth/login">Login</a></li>
-                <li><a href="/auth/register">Register</a></li>
-                {% endif %}
+            <div class="menu-right">
+
+            </div>
+            {% if app.request.attributes.get('user') %}
+            <ul class="menu-items">
+                <li><a class="menu-profile" href="/profile">
+                        <img src="{{app.request.attributes.get('user').photo}}" alt=""
+                            onerror="this.src='https://www.gravatar.com/avatar/{{ app.request.attributes.get('user').email }}?s=200&d=mp'" />
+                    </a></li>
+                <li><a class="menu-ecrire" href="/article/create">Ecrire</a></li>
 
             </ul>
+
+            {% else %}
+            <li><a href="/auth/login">Login</a></li>
+            <li><a href="/auth/register">Register</a></li>
+            {% endif %}
+
         </nav>
-        {% block body %}{% endblock %}
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
 </body>
 
 </html>

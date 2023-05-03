@@ -6,7 +6,14 @@
 <h1>Profile</h1>
 <div>
     <h2>Modifier les informations personnelles</h2>
-    <form action="/user/edit/me" method="POST">
+    <form action="/user/edit/me" method="POST" enctype="multipart/form-data">
+        <div>
+            
+            <label for="photo">photo:</label>
+            <input type="file" id="photo" name="photo" value="{{ user.photo }}" required>
+            <img src="{{ user.photo }}" alt="photo de profile" width="100px" id="photo-preview" style="max-width:200px;" 
+            onerror="this.src='https://www.gravatar.com/avatar/{{ user.photo }}?s=200&d=mp';"> 
+        </div>
         <div>
             <label for="nom">Nom:</label>
             <input type="text" id="nom" name="nom" value="{{ user.nom }}" required>
@@ -46,21 +53,18 @@
         {% if errors is defined and errors.password %}
             <p style="color: red">{{ errors.password }}</p>
         {% endif %}
-        <button type="submit">Sauvegarder les changements</button>
+        <button id="password-submit" type="submit">Sauvegarder les changements</button>
     </form>
 </div>
-{% endblock %}
 
-{% block javascripts %}
     <script>
-        // Compare new password and confirmation password
         const newPasswordInput = document.getElementById("new_password");
         const confirmPasswordInput = document.getElementById("confirm_password");
-        const submitButton = document.querySelector("button[type='submit']");
+        const submitButton = document.getElementById("password-submit");
         const errorParagraph = document.querySelector("p");
-
-        submitButton.disabled = true;
-
+        const imageInput = document.getElementById('photo');
+        const imagePreview = document.getElementById('photo-preview');
+        submitButton.disabled = true
         function validatePassword() {
             if (newPasswordInput.value !== confirmPasswordInput.value) {
                 errorParagraph.textContent = "Les deux mots de passe ne correspondent pas.";
@@ -73,5 +77,17 @@
 
         newPasswordInput.addEventListener("keyup", validatePassword);
         confirmPasswordInput.addEventListener("keyup", validatePassword);
+        console.log(imageInput);
+        imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                imagePreview.style.display = 'block';
+                imagePreview.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        } 
+    });
     </script>
 {% endblock %}

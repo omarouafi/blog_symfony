@@ -20,14 +20,14 @@ class UserController extends AbstractController
       /**
      * @Route("/profile", name="user_profile", methods={"GET"})
      */
-    public function profile(Request $request): Response
+    public function profile(Request $request, UserRepository $userRepository): Response
     {
         $user = $request->attributes->get('user');
+        $user = $userRepository->find($user['id']);
         
         return $this->render('security/profile.html.twig', [
             'user' => $user,
         ]);
-        
     }
 
      /**
@@ -41,6 +41,13 @@ class UserController extends AbstractController
         $user = $userRepository->find($id);
         $user->setNom($request->get('nom'));
         $user->setPrenom($request->get('prenom')); 
+        $file = $request->files->get('photo');
+        if ($file) {
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move($this->getParameter('uploads_directory'), $fileName);
+            $user->setPhoto('/uploads/'.$fileName);
+        }
+
         $userRepository->save($user,true);
         return $this->redirect("/profile");
         }catch( Exception $e){

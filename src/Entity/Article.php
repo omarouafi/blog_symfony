@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Soundasleep\Html2Text;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -177,5 +178,13 @@ class Article
         }
         
         return $this;
+    }
+
+    public function getContentPlainText(): string
+    {
+        $html = $this->getContent();
+        $html = new \Html2Text\Html2Text('Hello, &quot;<b>world</b>&quot;');
+        $plainText = $htmlToText->getText();
+        return $plainText;
     }
 }
