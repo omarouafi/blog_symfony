@@ -12,7 +12,16 @@
     </div>
     {% endif %}
 
-    <form method="post" action="/article/{{ article.id }}/modifier">
+    <form method="post" action="/article/{{ article.id }}/modifier" enctype="multipart/form-data">
+
+        
+        <div class="form-block">
+            <label for="image">Image:</label>
+            <input type="file" name="image" id="image" value="{{ image }}"
+                onerror="this.src='https://via.placeholder.com/150'">
+            <img id="image-preview" src="{{article.image}}" alt="Image preview" style="max-width:200px;">
+        </div>
+
         <div class="form-block">
             <label for="title">Title:</label>
             <input class="form-input" type="text" id="title" name="title" value="{{ article.title }}" required
@@ -48,12 +57,25 @@
     const editor = document.getElementById('markdown-editor');
     const preview = document.getElementById('markdown-preview');
     const content = document.getElementById('markdown-html');
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
 
     editor.addEventListener('input', function () {
         const markdown = editor.value;
         const html = marked(markdown);
         preview.innerHTML = html;
         content.innerHTML = html;
+    });
+     imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                imagePreview.style.display = 'block';
+                imagePreview.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        } 
     });
 </script>
 

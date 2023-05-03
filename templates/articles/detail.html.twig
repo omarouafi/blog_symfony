@@ -3,6 +3,9 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
+<div>
+    <img src="{{ article.image }}"  alt="image" style="width:100px;height:100px">
+</div
 <h1>{{ article.title }}</h1>
 <div class="article">
     <p>{{ article.content|raw }}</p>

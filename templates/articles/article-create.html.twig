@@ -2,10 +2,7 @@
 
 {% block body %}
 
-
-
 <div class="article-container">
-
 
     <h1>Create a new article</h1>
 
@@ -15,15 +12,25 @@
     </div>
     {% endif %}
 
-    <form method="post" action="/article/create">
+    <form method="post" action="/article/create" enctype="multipart/form-data">
+
+        <div class="form-block">
+            <label for="image">Image:</label>
+            <input type="file" name="image" id="image" value="{{ image }}"
+                onerror="this.src='https://via.placeholder.com/150'">
+            <img id="image-preview" src="#" alt="Image preview" style="display:none;max-width:200px;">
+        </div>
+
         <div class="form-block">
             <label for="title">Title:</label>
             <input class="form-input" type="text" id="title" name="title" value="{{ title }}" required autofocus>
         </div>
+
         <div class="form-block">
             <label for="markdown-editor">Content:</label>
             <textarea class="form-input" id="markdown-editor" name="content_text" required></textarea>
         </div>
+
         <div class="form-block">
             <label for="tags">Tags:</label>
             <select class="form-input" id="tags" name="tags[]" multiple required>
@@ -32,16 +39,20 @@
                 {% endfor %}
             </select>
         </div>
+
         <div>
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
+
         <textarea name="content" hidden id="markdown-html" id="" cols="30" rows="10"></textarea>
+
     </form>
 
     <div>
-        <h2>Aperçu</h2>
+        <h2>Preview</h2>
         <div id="markdown-preview"></div>
     </div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.0/marked.min.js"></script>
@@ -49,6 +60,8 @@
     const editor = document.getElementById('markdown-editor');
     const preview = document.getElementById('markdown-preview');
     const content = document.getElementById('markdown-html');
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
 
     editor.addEventListener('input', function () {
         const markdown = editor.value;
@@ -56,8 +69,23 @@
         preview.innerHTML = html;
         content.innerHTML = html;
     });
+
     $(document).ready(function () {
         $('#tags').select2();
     });
+
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                imagePreview.style.display = 'block';
+                imagePreview.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
+
 {% endblock %}

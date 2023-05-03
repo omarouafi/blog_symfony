@@ -25,6 +25,9 @@ class Article
     #[ORM\Column]
     private ?int $status = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $image = null;
+
   
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "author_id", referencedColumnName: "id")]
@@ -56,6 +59,16 @@ class Article
     {
         $this->title = $title;
 
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
         return $this;
     }
 

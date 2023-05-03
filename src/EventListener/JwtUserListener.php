@@ -55,6 +55,7 @@ class JwtUserListener implements EventSubscriberInterface
             $user['role'] = $updated_user->getRole();
             $request->attributes->set('user', $user);
             
+            
         }else {
             
             if($user_protected !== false){

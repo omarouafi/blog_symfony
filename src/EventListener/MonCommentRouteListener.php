@@ -47,7 +47,7 @@ class MonCommentRouteListener implements EventSubscriberInterface
         }
 
     }catch( \Exception $e){
-            $response = new RedirectResponse('/home');
+            $response = new RedirectResponse('/');
             $event->setResponse($response);
         }
     }   

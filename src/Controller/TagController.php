@@ -33,7 +33,7 @@ class TagController extends AbstractController
             'pagination' => $pagination,
         ]);
         }catch(Exception $e){
-            return $this->redirectToRoute('/home');
+            return $this->redirectToRoute('/');
         }
     }
 

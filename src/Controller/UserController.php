@@ -188,8 +188,8 @@ class UserController extends AbstractController
     }
 
     /**
-        * @Route("/admin/user/{id}/update-password", name="admin_update_password", methods={"POST"})
-        */
+     * @Route("/admin/user/{id}/update-password", name="admin_update_password", methods={"POST"})
+    */
     public function update_password(UserRepository $userRepository, $id, Request $request,UserPasswordHasherInterface $passwordEncoder): Response
     {
         try{        
@@ -214,8 +214,8 @@ class UserController extends AbstractController
     }
 
     /** 
-        * @Route("/admin/user/add-user", name="admin_add_account", methods={"POST"})
-        */
+     * @Route("/admin/user/add-user", name="admin_add_account", methods={"POST"})
+    */
     public function add_account(UserRepository $userRepository, Request $request,UserPasswordHasherInterface $passwordEncoder, RoleRepository $roleRepository): Response
     {
         try{

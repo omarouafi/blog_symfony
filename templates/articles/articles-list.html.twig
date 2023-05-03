@@ -6,8 +6,20 @@
 <link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
 
 <h1>Article List</h1>
+
+<form method="get" action="{{ path('list_articles') }}">
+    <label for="q">Search:</label>
+    <input type="text" name="q" value="{{ app.request.query.get('q') }}">
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
 {% for article in articles %}
 <div class="article">
+    <div> 
+        <img src="{{ article.image }}" style="width:100px;heigth:100px;" alt="image" onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+    </div>
     <h2>{{ article.title }}</h2>
     <p>{{ article.content|raw }}</p>
     <p>{{ article.getAuthor().getNom() }}</p>
@@ -18,5 +30,9 @@
     <a href="/articles/{{ article.id }}">View</a>
 </div>
 {% endfor %}
+
+<hr>
+
+{{ knp_pagination_render(articles) }}
 
 {% endblock %}

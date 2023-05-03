@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use App\Security\CustomAuthenticator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
+use Knp\Component\Pager\PaginatorInterface;
 use League\HTMLToMarkdown\HtmlConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,14 +23,22 @@ class ArticleController extends AbstractController
     /**
     * @Route("/articles", name="list_articles", methods={"GET"})
     */
-    public function index(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository): Response
+    public function index(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository,PaginatorInterface $paginator): Response
     {
+        $articlesQuery=null;
         $query = $request->query->get('q');
         if ($query) {
-            $articles = $articleRepository->searchByTitleContentAuthor($query);
+            $articlesQuery = $articleRepository->searchByTitleContentAuthor($query);
         } else {
-            $articles = $articleRepository->findAllWithAuthorCommentsTags();
+            $articlesQuery = $articleRepository->findAllWithAuthorCommentsTags();
         }
+
+        $articles = $paginator->paginate(
+            $articlesQuery,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10),
+            
+        );
 
         return $this->render('articles/articles-list.html.twig', [
             'articles' => $articles,
@@ -48,6 +57,8 @@ class ArticleController extends AbstractController
             "author_id" => "",
             "content" => "",
             "tags" => $tags,
+            "image" => '',
+
         ]);
     }
    /**
@@ -65,6 +76,7 @@ class ArticleController extends AbstractController
                     "error" => "Le titre et le contenu sont obligatoires",
                     "title" => $title,
                     "content" => $content,
+                    "image" => '',
                 ]);
             }
             $article = new Article();
@@ -72,6 +84,13 @@ class ArticleController extends AbstractController
             $article->setContent($content);
             $article->setAuthor($author);
             $article->setStatus(0);
+
+            $file = $request->files->get('image');
+            if ($file) {
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $file->move($this->getParameter('uploads_directory'), $fileName);
+                $article->setImage('/uploads/'.$fileName);
+            }
 
             $tags = $request->get('tags', []);
             foreach ($tags as $tagId) {
@@ -90,6 +109,7 @@ class ArticleController extends AbstractController
                     "error" => "Une erreur est survenue",
                     "title" => $title,
                     "content" => $content,
+                    "image" => '',
                 ]);
             
         } 
@@ -132,10 +152,14 @@ class ArticleController extends AbstractController
         $tags = $tagRepository->findAll();
         $converter = new HtmlConverter();
         $markdownContent = $converter->convert($article->getContent());
+
+       
+
         return $this->render('articles/article-edit.html.twig', [
             'error' => $error,
             'article' => $article,
             'markdownContent' => $markdownContent,
+            'image' => '',
             "tags" => $tags
         ]);
     }
@@ -148,7 +172,12 @@ public function article_modifier_post(Request $request ,Article $article,Article
     $content = $request->request->get('content');
     $article->setTitle($title);
     $article->setContent($content);
-
+    $file = $request->files->get('image');
+    if ($file) {
+        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+        $file->move($this->getParameter('uploads_directory'), $fileName);
+        $article->setImage('/uploads/'.$fileName);
+    }
     $selectedTags = [];
     $tags = $request->get('tags', []);
     foreach ($tags as $tagId) {

@@ -36,6 +36,9 @@
                 <li><a href="/articles">Articles</a></li>
                 {% if app.request.attributes.get('user') %}
                 <li><a href="/article/create">Create Article</a></li>
+                {% if app.request.attributes.get('user').role.label == 'admin'%}
+                <li><a href="/admin/users">Users</a></li>
+                {% endif %} 
                 <li><a href="/profile">Profile</a></li>
                 <li><a href="/auth/logout">Logout</a></li>
 
