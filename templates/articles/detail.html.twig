@@ -3,27 +3,54 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-<div>
-    <img src="{{ article.image }}"  alt="image" style="width:100px;height:100px">
-</div
-<h1>{{ article.title }}</h1>
-<div class="article">
-    <p>{{ article.content|raw }}</p>
-    <p>Author: {{ article.getAuthor().getNom() }}</p>
-    <p>Comments:</p>
-    {% for comment in article.getComment() %}
-    <div class="comment">
-        <p>{{ comment.content }}</p>
-        <p>Author: {{ comment.getAuthor().getNom() }}</p>
+<div class="article-detail-page-container">
+    <div class="article-author">
+        <div class="article-author-photo">
+            <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
+                onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+        </div>
+        <div class="article-author-info">
+            <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
+            <span>
+                {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
+            </span>
+        </div>
     </div>
-    {% endfor %}
+    <div class="article-title">
+        <h1>{{ article.title }}</h1>
+    </div>
+    <div class="article-detail-image">
+        <img src="{{ article.image }}" alt="image">
+    </div>
+    <div class="article-content">
+        <p>{{ article.content|raw }}</p>
+
+    </div>
+    <div class="article-comments-container">
+        <p class="article-comment">Comments:</p>
+        {% for comment in article.getComment() %}
+        <div class="comment">
+
+            <div class="article-author">
+                <div class="article-author-photo">
+                    <img src="{{ comment.getAuthor().getPhoto() }}" alt="image"
+                        onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                </div>
+                <div class="article-author-info">
+                    <p>{{ comment.getAuthor().getPrenom() }} {{ comment.getAuthor().getNom() }}</p>
+                </div>
+            </div>
+            <p class="comment-content">{{ comment.content }}</p>
+        </div>
+        {% endfor %}
+    </div>
     {% for tag in article.getTags() %}
     <div class="comment">
         <p>{{ tag.mot }}</p>
     </div>
     {% endfor %}
-    <hr>
-    {%  if app.request.attributes.get('user') is not null %}
+
+    {% if app.request.attributes.get('user') is not null %}
 
     <h2>Commentez!</h2>
     <form action="/article/{{article.id}}/comment" method="POST">
@@ -44,9 +71,11 @@
         {% endfor %}
     </div>
 
-    {% if app.request.attributes.get('user') is not null and article.getAuthor().getId() == app.request.attributes.get('user').id %}
+    {% if app.request.attributes.get('user') is not null and article.getAuthor().getId() ==
+    app.request.attributes.get('user').id %}
     <a href="/article/{{article.id}}/supprimer">Supprimer</a>
     <a href="/article/{{article.id}}/modifier">Modifier</a>
     {% endif %}
 </div>
+
 {% endblock %}

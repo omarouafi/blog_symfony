@@ -18,24 +18,36 @@
 {% for article in articles %}
 <div class="article-container">
     <div class="article-author">
-        <p>{{ article.getAuthor().getNom() }}</p>
-        <p>{{ article.getAuthor().getPrenom() }}</p>
+        <div class="article-author-photo">
+            <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
+                onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+        </div>
+        <div class="article-author-info">
+            <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
+            <span>
+                {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
+            </span>
+        </div>
     </div>
-    <div class="article-detail">
+    <a href="/articles/{{article.id}}" class="article-detail">
 
         <div class="article-info">
             <div class="article-title">
                 <h2>{{ article.title }}</h2>
             </div>
-            <div class="article-description">
+            <div class="article-content">
+                {% if article.content|length > 200 %}
+                <p>{{ article.content|slice(0, 200) }}...</p>
+                {% else %}
                 <p>{{ article.content }}</p>
+                {% endif %}
             </div>
         </div>
         <div class="article-image">
-            <img src="{{ article.image }}" style="width:100px;heigth:100px;" alt="image"
+            <img src="{{ article.image }}" alt="image"
                 onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
         </div>
-    </div>
+    </a>
 </div>
 {% endfor %}
 

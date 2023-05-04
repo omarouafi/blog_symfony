@@ -40,11 +40,42 @@ class Article
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'articles')]
     private Collection $tags;
 
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $updatedAt = null;
+
     public function __construct()
     {
         $this->comment = new ArrayCollection();
         $this->tags = new ArrayCollection();
     }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }   
+
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    
 
     public function getId(): ?int
     {
@@ -183,7 +214,7 @@ class Article
     public function getContentPlainText(): string
     {
         $html = $this->getContent();
-        $html = new \Html2Text\Html2Text('Hello, &quot;<b>world</b>&quot;');
+        $html = new Html2Text('Hello, &quot;<b>world</b>&quot;');
         $plainText = $htmlToText->getText();
         return $plainText;
     }
