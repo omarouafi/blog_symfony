@@ -57,7 +57,7 @@ class ArticleRepository extends ServiceEntityRepository
             ->leftJoin('a.author', 'u')
             ->leftJoin('a.comment', 'c')
             ->leftJoin('a.tags', 't')
-            ->where('a.title LIKE :query OR a.content LIKE :query OR u.nom LIKE :query OR u.prenom LIKE :query')
+            ->where('a.title LIKE :query OR a.content LIKE :query OR u.nom LIKE :query OR u.prenom LIKE :query OR t.mot LIKE :query')
             ->setParameter('query', '%' . $query . '%')
             ->getQuery()
             ->getResult();

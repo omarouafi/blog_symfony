@@ -5,53 +5,56 @@
 {% block body %}
 <link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
 
-<div class="articles-list-header">
-    <h1>Articles</h1>
+<div class="container">
+    <div class="articles-list-header">
+        <h1>Articles</h1>
 
-    <form class="search-form" method="get" action="{{ path('list_articles') }}">
-        <input class="form-input" type="text" name="q" value="{{ app.request.query.get('q') }}">
-        <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
-    </form>
-</div>
-
-
-{% for article in articles %}
-<div class="article-container">
-    <div class="article-author">
-        <div class="article-author-photo">
-            <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
-                onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
-        </div>
-        <div class="article-author-info">
-            <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
-            <span>
-                {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
-            </span>
-        </div>
+        <form class="search-form" method="get" action="{{ path('list_articles') }}">
+            <input class="form-input" type="text" name="q" value="{{ app.request.query.get('q') }}">
+            <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+        </form>
     </div>
-    <a href="/articles/{{article.id}}" class="article-detail">
 
-        <div class="article-info">
-            <div class="article-title">
-                <h2>{{ article.title }}</h2>
+
+    {% for article in articles %}
+    <div class="article-container">
+        <div class="article-author">
+            <div class="article-author-photo">
+                <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
+                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
             </div>
-            <div class="article-content">
-                {% if article.content|length > 200 %}
-                <p>{{ article.content|slice(0, 200) }}...</p>
-                {% else %}
-                <p>{{ article.content }}</p>
-                {% endif %}
+            <div class="article-author-info">
+                <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
+                <span>
+                    {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
+                </span>
             </div>
         </div>
-        <div class="article-image">
-            <img src="{{ article.image }}" alt="image"
-                onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
-        </div>
-    </a>
+        <a href="/articles/{{article.id}}" class="article-detail">
+
+            <div class="article-info">
+                <div class="article-title">
+                    <h2>{{ article.title }}</h2>
+                </div>
+                <div class="article-content">
+                    {% if article.content|length > 200 %}
+                    <p>{{ article.content|slice(0, 200) }}...</p>
+                    {% else %}
+                    <p>{{ article.content }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="article-image">
+                <img src="{{ article.image }}" alt="image"
+                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+            </div>
+        </a>
+    </div>
+
+    {% endfor %}
+
+
+    {{ knp_pagination_render(articles) }}
+
 </div>
-{% endfor %}
-
-
-{{ knp_pagination_render(articles) }}
-
 {% endblock %}

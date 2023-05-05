@@ -46,6 +46,34 @@ class ArticleController extends AbstractController
             'articles' => $articles,
         ]);
     }
+
+     /**
+    * @Route("/user/articles", name="user_list_articles", methods={"GET"})
+    */
+    public function mes_articles(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository,PaginatorInterface $paginator): Response
+    {
+        $articlesQuery=null;
+        $query = $request->query->get('q');
+        if ($query) {
+            $articlesQuery = $articleRepository->searchByTitleContentAuthor($query);
+        } else {
+            $articlesQuery = $articleRepository->findAllWithAuthorCommentsTags();
+        }
+
+        $articles = $paginator->paginate(
+            $articlesQuery,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10),
+            
+        );
+
+        
+
+        return $this->render('articles/articles-list.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
    /**
      * @Route("/article/create", name="user_create_articles", methods={"GET"})
     */
@@ -79,6 +107,7 @@ class ArticleController extends AbstractController
                     "title" => $title,
                     "content" => $content,
                     "image" => '',
+                    "tags" => '',
                 ]);
             }
             $article = new Article();
@@ -86,6 +115,8 @@ class ArticleController extends AbstractController
             $article->setContent($content);
             $article->setAuthor($author);
             $article->setStatus(0);
+            $article->setCreatedAt(new \DateTime());
+            $article->setUpdatedAt(new \DateTime());
 
             $file = $request->files->get('image');
             if ($file) {
@@ -112,6 +143,7 @@ class ArticleController extends AbstractController
                     "title" => $title,
                     "content" => $content,
                     "image" => '',
+                    "tags" => '',
                 ]);
             
         } 
@@ -139,6 +171,9 @@ class ArticleController extends AbstractController
         $comment->setContent($content);
         $comment->setAuthor($author);
         $comment->setArticleId($article);
+        $comment->setCreatedAt(new \DateTime());
+        $comment->setUpdatedAt(new \DateTime());
+
         
         $commentRepository->save($comment, true);
         return $this->redirectToRoute('article_detail', ['id' => $article->getId()]);
@@ -199,6 +234,6 @@ public function article_modifier_post(Request $request ,Article $article,Article
     public function article_supprimer(Request $request ,Article $article,ArticleRepository $articleRepository)
     {
         $articleRepository->remove($article, true);
-        return $this->redirectToRoute('articles');        
+        return $this->redirectToRoute('list_articles');        
     }
 }

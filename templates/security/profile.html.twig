@@ -3,82 +3,103 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-<h1>Profile</h1>
-<div>
-    <h2>Modifier les informations personnelles</h2>
-    <form action="/user/edit/me" method="POST" enctype="multipart/form-data">
-        <div>
-            
-            <label for="photo">photo:</label>
-            <input type="file" id="photo" name="photo" value="{{ user.photo }}" required>
-            <img src="{{ user.photo }}" alt="photo de profile" width="100px" id="photo-preview" style="max-width:200px;" 
-            onerror="this.src='https://www.gravatar.com/avatar/{{ user.photo }}?s=200&d=mp';"> 
+<div class="user-dashboard">
+    <div class="side-bar">
+        <a href="/user/profile" class="side-bar-item active">
+            Profile
+        </a>
+        <a href="/user/articles" class="side-bar-item">
+            Mes articles
+        </a>
+        <a href="/user/comments" class="side-bar-item">
+            Mes commentaires</a>
+    </div>
+
+
+    <div class="profile-container">
+        <h1>Profile</h1>
+        <div class="profile-container-item">
+            <form action="/user/edit/me" method="POST" enctype="multipart/form-data">
+                <div>
+
+                    <label for="photo" class="user-photo-label">
+                        <img src="{{ user.photo }}" alt="photo de profile" width="100px" id="photo-preview"
+                            style="max-width:200px;"
+                            onerror="this.src='https://www.gravatar.com/avatar/{{ user.photo }}?s=200&d=mp';">
+                    </label>
+                    <input style="display: none;" type="file" id="photo" name="photo" value="{{ user.photo }}" required>
+
+                </div>
+                <div class="form-block">
+                    <label for="nom">Nom:</label>
+                    <input class="form-input" type="text" id="nom" name="nom" value="{{ user.nom }}" required>
+                </div>
+
+
+                <div class="form-block">
+                    <label for="prenom">Prenom:</label>
+                    <input class="form-input" type="text" id="prenom" name="prenom" value="{{ user.prenom }}" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Sauvegarder les changements</button>
+            </form>
         </div>
-        <div>
-            <label for="nom">Nom:</label>
-            <input type="text" id="nom" name="nom" value="{{ user.nom }}" required>
+        <div class="profile-container-item">
+            <h2>Changer l'email</h2>
+            <form action="/update-my-email" method="POST">
+                <div class="form-block">
+                    <label for="email">Email:</label>
+                    <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Sauvegarder les changements</button>
+            </form>
         </div>
-        <div>
-            <label for="prenom">Prenom:</label>
-            <input type="text" id="prenom" name="prenom" value="{{ user.prenom }}" required>
+        <div class="profile-container-item">
+            <h2>Changer le mot de passe</h2>
+            <form action="/update-my-password" method="POST">
+                <div class="form-block">
+                    <label for="old_password">Ancien mot de passe:</label>
+                    <input class="form-input" type="password" id="old_password" name="old_password" required>
+                </div>
+                <div class="form-block">
+                    <label for="new_password">Nouveau mot de passe:</label>
+                    <input class="form-input" type="password" id="new_password" name="new_password" required>
+                </div>
+                <div class="form-block">
+                    <label for="confirm_password">Confirmez le nouveau mot de passe:</label>
+                    <input class="form-input" type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                {% if errors is defined and errors.password %}
+                <p style="color: red">{{ errors.password }}</p>
+                {% endif %}
+                <button class="btn btn-primary" id="password-submit" type="submit">Sauvegarder les changements</button>
+            </form>
         </div>
-        <button type="submit">Sauvegarder les changements</button>
-    </form>
-</div>
-<div>
-    <h2>Changer l'email</h2>
-    <form action="/update-my-email" method="POST">
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{ user.email }}" required>
-        </div>
-        <button type="submit">Sauvegarder les changements</button>
-    </form>
-</div>
-<div>
-    <h2>Changer le mot de passe</h2>
-    <form action="/update-my-password" method="POST">
-        <div>
-            <label for="old_password">Ancien mot de passe:</label>
-            <input type="password" id="old_password" name="old_password" required>
-        </div>
-        <div>
-            <label for="new_password">Nouveau mot de passe:</label>
-            <input type="password" id="new_password" name="new_password" required>
-        </div>
-        <div>
-            <label for="confirm_password">Confirmez le nouveau mot de passe:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
-        </div>
-        {% if errors is defined and errors.password %}
-            <p style="color: red">{{ errors.password }}</p>
-        {% endif %}
-        <button id="password-submit" type="submit">Sauvegarder les changements</button>
-    </form>
+    </div>
+
 </div>
 
-    <script>
-        const newPasswordInput = document.getElementById("new_password");
-        const confirmPasswordInput = document.getElementById("confirm_password");
-        const submitButton = document.getElementById("password-submit");
-        const errorParagraph = document.querySelector("p");
-        const imageInput = document.getElementById('photo');
-        const imagePreview = document.getElementById('photo-preview');
-        submitButton.disabled = true
-        function validatePassword() {
-            if (newPasswordInput.value !== confirmPasswordInput.value) {
-                errorParagraph.textContent = "Les deux mots de passe ne correspondent pas.";
-                submitButton.disabled = true;
-            } else {
-                errorParagraph.textContent = "";
-                submitButton.disabled = false;
-            }
+<script>
+    const newPasswordInput = document.getElementById("new_password");
+    const confirmPasswordInput = document.getElementById("confirm_password");
+    const submitButton = document.getElementById("password-submit");
+    const errorParagraph = document.querySelector("p");
+    const imageInput = document.getElementById('photo');
+    const imagePreview = document.getElementById('photo-preview');
+    submitButton.disabled = true
+    function validatePassword() {
+        if (newPasswordInput.value !== confirmPasswordInput.value) {
+            errorParagraph.textContent = "Les deux mots de passe ne correspondent pas.";
+            submitButton.disabled = true;
+        } else {
+            errorParagraph.textContent = "";
+            submitButton.disabled = false;
         }
+    }
 
-        newPasswordInput.addEventListener("keyup", validatePassword);
-        confirmPasswordInput.addEventListener("keyup", validatePassword);
-        console.log(imageInput);
-        imageInput.addEventListener('change', function () {
+    newPasswordInput.addEventListener("keyup", validatePassword);
+    confirmPasswordInput.addEventListener("keyup", validatePassword);
+    console.log(imageInput);
+    imageInput.addEventListener('change', function () {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
@@ -87,7 +108,7 @@
                 imagePreview.src = reader.result;
             }
             reader.readAsDataURL(file);
-        } 
+        }
     });
-    </script>
+</script>
 {% endblock %}

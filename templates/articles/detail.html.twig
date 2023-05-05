@@ -3,79 +3,98 @@
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-<div class="article-detail-page-container">
-    <div class="article-author">
-        <div class="article-author-photo">
-            <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
-                onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
-        </div>
-        <div class="article-author-info">
-            <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
-            <span>
-                {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
-            </span>
-        </div>
-    </div>
-    <div class="article-title">
-        <h1>{{ article.title }}</h1>
-    </div>
-    <div class="article-detail-image">
-        <img src="{{ article.image }}" alt="image">
-    </div>
-    <div class="article-content">
-        <p>{{ article.content|raw }}</p>
+<div class="container">
 
-    </div>
-    <div class="article-comments-container">
-        <p class="article-comment">Comments:</p>
-        {% for comment in article.getComment() %}
-        <div class="comment">
 
-            <div class="article-author">
-                <div class="article-author-photo">
-                    <img src="{{ comment.getAuthor().getPhoto() }}" alt="image"
-                        onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
-                </div>
-                <div class="article-author-info">
-                    <p>{{ comment.getAuthor().getPrenom() }} {{ comment.getAuthor().getNom() }}</p>
-                </div>
+    <div class="article-detail-page-container">
+        <div class="article-author">
+            <div class="article-author-photo">
+                <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
+                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
             </div>
-            <p class="comment-content">{{ comment.content }}</p>
+            <div class="article-author-info">
+                <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
+                <span>
+                    {{ article.getAuthor().getCreatedAt()|date('j F Y', 'Europe/Paris') }}
+                </span>
+            </div>
         </div>
-        {% endfor %}
-    </div>
-    {% for tag in article.getTags() %}
-    <div class="comment">
-        <p>{{ tag.mot }}</p>
-    </div>
-    {% endfor %}
-
-    {% if app.request.attributes.get('user') is not null %}
-
-    <h2>Commentez!</h2>
-    <form action="/article/{{article.id}}/comment" method="POST">
-        <div>
-            <textarea id="content" name="comment_content" required></textarea>
+        <div class="article-title">
+            <h1>{{ article.title }}</h1>
         </div>
-        <button type="submit">Add comment</button>
-    </form>
-    {% endif %}
-    <div>
-        {% for comment in article.getComment() %}
-        <p>{{comment.getContent()}} by {{comment.getAuthor().getNom()}}</p>
-        {% if app.request.attributes.get('user') is not null and comment.getAuthor().getId() ==
-        app.request.attributes.get('user').id
-        %}
-        <a href="/comment/{{comment.id}}/supprimer">Supprimer</a>
+        <div class="article-tags">
+            <h4>Tags : </h4>
+            {% for tag in article.getTags() %}
+            <div class="article-tag">
+                <a href="/articles?q={{tag.mot}}" style="width: fit-content;" class="btn btn-secondary">{{ tag.mot
+                    }}</a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="article-detail-image">
+            <img src="{{ article.image }}" alt="image">
+        </div>
+        <div class="article-content">
+            <p>{{ article.content|raw }}</p>
+
+        </div>
+        <div class="article-comments-container">
+            <p class="article-comment">Comments:</p>
+            {% if app.request.attributes.get('user') is not null %}
+            <div class="comment">
+                <div class="article-author">
+                    <div class="article-author-photo">
+                        <img src="{{ app.request.attributes.get('user').photo }}" alt="image"
+                            onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                    </div>
+                    <div class="article-author-info">
+                        <p>{{ app.request.attributes.get('user').prenom }} {{ app.request.attributes.get('user').nom
+                            }}</p>
+                    </div>
+                </div>
+
+                <form style="width: 60%;" action="/article/{{article.id}}/comment" method="POST">
+                    <div>
+                        <textarea class="form-input" rows="3" style="resize: none; width: 100%;" id=" content"
+                            name="comment_content" required></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Add comment</button>
+                </form>
+            </div>
+
+            {% endif %}
+            {% for comment in article.getComment() %}
+            <div class="comment">
+                <div class="article-author">
+                    <div class="article-author-photo">
+                        <img src="{{ comment.getAuthor().getPhoto() }}" alt="image"
+                            onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                    </div>
+                    <div class="article-author-info">
+                        <p>{{ comment.getAuthor().getPrenom() }} {{ comment.getAuthor().getNom() }}</p>
+                        <span>{{comment.getCreatedAt()|date('j F Y', 'Europe/Paris')}}</span>
+                    </div>
+                    {% if app.request.attributes.get('user') is not null and comment.getAuthor().getId() ==
+                    app.request.attributes.get('user').id
+                    %}
+                    <a class="btn btn-secondary" style="width: fit-content; margin-left: 40px; "
+                        href="/comment/{{comment.id}}/supprimer"><i class="fas fa-trash"></i></a>
+                    {% endif %}
+                </div>
+                <p class="comment-content">{{ comment.content }}</p>
+
+            </div>
+            {% endfor %}
+        </div>
+
+
+        {% if app.request.attributes.get('user') is not null and article.getAuthor().getId() ==
+        app.request.attributes.get('user').id %}
+        <div class="article-actions">
+            <a class="btn btn-secondary" href="/article/{{article.id}}/supprimer">Supprimer l'article</a>
+            <a class="btn btn-secondary" href="/article/{{article.id}}/modifier">Modifier l'article</a>
+        </div>
         {% endif %}
-        {% endfor %}
     </div>
-
-    {% if app.request.attributes.get('user') is not null and article.getAuthor().getId() ==
-    app.request.attributes.get('user').id %}
-    <a href="/article/{{article.id}}/supprimer">Supprimer</a>
-    <a href="/article/{{article.id}}/modifier">Modifier</a>
-    {% endif %}
 </div>
-
 {% endblock %}

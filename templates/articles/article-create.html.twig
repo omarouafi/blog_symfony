@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<div class="article-container">
+<div class="article-container new-article-page ">
 
     <h1>Create a new article</h1>
 
@@ -15,20 +15,26 @@
     <form method="post" action="/article/create" enctype="multipart/form-data">
 
         <div class="form-block">
-            <label for="image">Image:</label>
-            <input type="file" name="image" id="image" value="{{ image }}"
+
+            <label for="image">
+                <p type="button" class="btn btn-secondary">Cliquez ici pour ajouter une image</p>
+            </label>
+            <input type="file" style="display: none;" name="image" id="image" value="{{ image }}"
                 onerror="this.src='https://via.placeholder.com/150'">
-            <img id="image-preview" src="#" alt="Image preview" style="display:none;max-width:200px;">
+            <img id="image-preview" src="#" alt="Image preview" onerror="this.src='https://via.placeholder.com/150'">
         </div>
 
+
+
         <div class="form-block">
-            <label for="title">Title:</label>
+            <label for="title">Titre:</label>
             <input class="form-input" type="text" id="title" name="title" value="{{ title }}" required autofocus>
         </div>
 
         <div class="form-block">
-            <label for="markdown-editor">Content:</label>
-            <textarea class="form-input" id="markdown-editor" name="content_text" required></textarea>
+            <label for="markdown-editor">Contenu:</label>
+            <textarea class="form-input" style="resize: none;" rows="15" id="markdown-editor" name="content_text"
+                required></textarea>
         </div>
 
         <div class="form-block">
@@ -48,8 +54,8 @@
 
     </form>
 
-    <div>
-        <h2>Preview</h2>
+    <div class="article-preview">
+        <h2>Aperçu</h2>
         <div id="markdown-preview"></div>
     </div>
 
@@ -62,10 +68,12 @@
     const content = document.getElementById('markdown-html');
     const imageInput = document.getElementById('image');
     const imagePreview = document.getElementById('image-preview');
-
+    console.log(imageInput);
+    console.log(editor);
     editor.addEventListener('input', function () {
         const markdown = editor.value;
         const html = marked(markdown);
+        console.log(html)
         preview.innerHTML = html;
         content.innerHTML = html;
     });
