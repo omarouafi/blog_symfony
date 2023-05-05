@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Comment>
@@ -31,6 +32,20 @@ class CommentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function listCommentsByLoggedInUser(UserInterface $user)
+{
+    $query = $this->createQueryBuilder('c')
+        ->leftJoin('c.article_id', 'a')
+        ->leftJoin('c.author', 'u')
+        ->addSelect('a')
+        ->addSelect('u')
+        ->andWhere('c.author = :user')
+        ->setParameter('user', $user)
+        ->getQuery();
+    
+    return $query->getResult();
+}
 
 
     public function save(Comment $entity, bool $flush = false): void

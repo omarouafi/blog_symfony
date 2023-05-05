@@ -4,16 +4,8 @@
 
 {% block body %}
 <div class="user-dashboard">
-    <div class="side-bar">
-        <a href="/user/profile" class="side-bar-item active">
-            Profile
-        </a>
-        <a href="/user/articles" class="side-bar-item">
-            Mes articles
-        </a>
-        <a href="/user/comments" class="side-bar-item">
-            Mes commentaires</a>
-    </div>
+    {% include '/utils/user-side-bar.html.twig' %}
+
 
 
     <div class="profile-container">
@@ -21,7 +13,6 @@
         <div class="profile-container-item">
             <form action="/user/edit/me" method="POST" enctype="multipart/form-data">
                 <div>
-
                     <label for="photo" class="user-photo-label">
                         <img src="{{ user.photo }}" alt="photo de profile" width="100px" id="photo-preview"
                             style="max-width:200px;"

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Article>
@@ -57,8 +58,17 @@ class ArticleRepository extends ServiceEntityRepository
             ->leftJoin('a.author', 'u')
             ->leftJoin('a.comment', 'c')
             ->leftJoin('a.tags', 't')
-            ->where('a.title LIKE :query OR a.content LIKE :query OR u.nom LIKE :query OR u.prenom LIKE :query OR t.mot LIKE :query')
+            ->where('a.tit  le LIKE :query OR a.content LIKE :query OR u.nom LIKE :query OR u.prenom LIKE :query OR t.mot LIKE :query')
             ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function listArticlesByLoggedInUser(UserInterface $user)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.author = :user')
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }

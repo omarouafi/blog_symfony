@@ -1,0 +1,27 @@
+ <div class="side-bar">
+        <a href="/profile" class="side-bar-item">
+            Profile
+        </a>
+        <a href="/user/articles" class="side-bar-item">
+            Mes articles
+        </a>
+        <a href="/user/comments" class="side-bar-item">
+            Mes commentaires</a>
+        {% if app.request.attributes.get('user').role.label == 'admin' %}
+        <a href="/admin/articles" class="side-bar-item">
+            Articles
+        </a>
+        <a href="/admin/users" class="side-bar-item">
+            Utilisateurs
+        </a>
+        <a href="/admin/comments" class="side-bar-item">
+            Commentaires
+        </a>
+        <a href="/admin/tags" class="side-bar-item">
+            Tags
+        </a>
+        {% endif %}
+        <a href="/auth/logout" class="side-bar-item">
+            Se déconnecter
+        </a>
+    </div>

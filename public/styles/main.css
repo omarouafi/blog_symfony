@@ -480,7 +480,7 @@ a {
 }
 
 .profile-container {
-  padding: 40px;
+  padding: 20px;
 }
 
 .profile-container h1 {
@@ -532,7 +532,7 @@ a {
 }
 
 .side-bar {
-  width: 30%;
+  width: 25%;
   margin-right: 20px;
   border-right: 1px #29292c45 solid;
 }
@@ -565,4 +565,8 @@ a {
 .side-bar {
   display: flex;
   flex-direction: column;
+}
+
+.profile-container table {
+  font-size: 14px;
 }

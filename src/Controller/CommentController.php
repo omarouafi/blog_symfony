@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CommentRepository;
+use App\Repository\UserRepository;
 use App\Security\CustomAuthenticator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,4 +44,18 @@ class CommentController extends AbstractController
         }
 
     }
+
+     /**
+    * @Route("/user/comments", name="user_comments", methods={"GET"})
+    */
+    public function mes_comments(Request $request, CustomAuthenticator $auth, CommentRepository $commentRepository, UserRepository $userRepository): Response
+    {
+        $user = $request->attributes->get('user');
+        $user = $userRepository->find($user['id']);
+        $comments = $commentRepository->listCommentsByLoggedInUser($user);
+        return $this->render('comment/mes-comments-list.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
+
 }

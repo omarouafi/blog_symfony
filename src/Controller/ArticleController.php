@@ -50,26 +50,12 @@ class ArticleController extends AbstractController
      /**
     * @Route("/user/articles", name="user_list_articles", methods={"GET"})
     */
-    public function mes_articles(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository,PaginatorInterface $paginator): Response
+    public function mes_articles(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository,PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
-        $articlesQuery=null;
-        $query = $request->query->get('q');
-        if ($query) {
-            $articlesQuery = $articleRepository->searchByTitleContentAuthor($query);
-        } else {
-            $articlesQuery = $articleRepository->findAllWithAuthorCommentsTags();
-        }
-
-        $articles = $paginator->paginate(
-            $articlesQuery,
-            $request->query->getInt('page', 1),
-            $request->query->getInt('limit', 10),
-            
-        );
-
-        
-
-        return $this->render('articles/articles-list.html.twig', [
+        $user = $request->attributes->get('user');
+        $user = $userRepository->find($user['id']);
+        $articles = $articleRepository->listArticlesByLoggedInUser($user);
+        return $this->render('articles/mes-articles-list.html.twig', [
             'articles' => $articles,
         ]);
     }
