@@ -5,15 +5,16 @@
 {% block body %}
 
 
-{% if error %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endif %}
 <div class="auth-container">
     <form method="post" action="/auth/register" class="auth-block">
         <div class="auth-header">
             <h1>S'inscrire</h1>
             <p>Veuillez entrer vos informations pour créer votre compte.</p>
         </div>
+        
+        {% if error %}
+            <div style="color:red;" class="alert alert-danger">{{ error }}</div>
+        {% endif %}
         <div class="d-flex">
             <div class="form-block mr">
                 <label for="nom">Nom:</label>

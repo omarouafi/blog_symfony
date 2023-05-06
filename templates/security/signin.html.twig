@@ -5,15 +5,16 @@
 {% block body %}
 
 
-{% if error %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endif %}
+
 <div class="auth-container">
     <form method="post" action="/auth/login" class="auth-block">
         <div class="auth-header">
             <h1>Se connecter</h1>
             <p>Veuillez entrer vos informations pour accéder à votre compte.</p>
         </div>
+        {% if error %}
+        <div style="color:red;" class="alert alert-danger">{{ error }}</div>
+        {% endif %}
         <div class="form-block">
             <label for="username">Adresse e-mail:</label>
             <input class="form-input" type="text" id="email" name="email" value="{{ email }}" required autofocus>
