@@ -140,7 +140,7 @@ class UserController extends AbstractController
         ]);
     }
     /**
-      * @Route("/admin/user/{id}/edit", name="admin_edit_user", methods={"GET"})
+      * @Route("/admin/user/{id}/edit", name="admin_edit_account", methods={"GET"})
       */
     public function edit(UserRepository $userRepository, $id): Response
     {
@@ -150,22 +150,27 @@ class UserController extends AbstractController
         ]);
     }
     /**
-      * @Route("/admin/user/{id}/edit", name="admin_edit_user", methods={"POST"})
+      * @Route("/admin/user/{id}/edit", name="admin_edit_account_post", methods={"POST"})
       */
     public function edit_user(UserRepository $userRepository, $id, Request $request,RoleRepository $roleRepository): Response
     {
         try{
         $user = $userRepository->find($id);
-        $role_id = $request->get('role');
-        $role = $roleRepository->find($role_id);
-        $user->setRole($role);
         $user->setNom($request->get('nom'));
-        $user->setPrenom($request->get('prenom'));        
-        $userRepository->save($user);
-        return $this->redirectToRoute("admin_list_users");
+        $user->setPrenom($request->get('prenom')); 
+        $file = $request->files->get('photo');
+        if ($file) {
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move($this->getParameter('uploads_directory'), $fileName);
+            $user->setPhoto('/uploads/'.$fileName);
+        }
+
+        $userRepository->save($user,true);
+        return $this->redirect("/admin/users");
         }catch( Exception $e){
+            dd($e);
             $this->addFlash('error', 'Une erreur est survenue');
-            return $this->redirectToRoute("admin_edit_user",["id"=>$id]);    
+            return $this->redirect("/admin/users");    
         }
     }
     /**
@@ -187,11 +192,11 @@ class UserController extends AbstractController
         $user_email_exist = $userRepository->findOneBy(['email' => $request->get('email')]);
         if($user_email_exist){
             $this->addFlash('error', 'Cet email est déjà utilisé');
-            return $this->redirectToRoute("admin_show_user",["id"=>$id]);
+            return $this->redirect("/admin/users");
         }
         $user->setEmail($request->get('email'));
-        $userRepository->save($user);
-        return $this->redirectToRoute("admin_show_user",["id"=>$id]);
+        $userRepository->save($user,true);
+        return $this->redirect("/admin/users");
     }
 
     /**
@@ -202,21 +207,14 @@ class UserController extends AbstractController
         try{        
         $user = $userRepository->find($id);
 
-        $old_password = $request->get('old_password');
         $new_password = $request->get('password');
-
-        if(!$passwordEncoder->isPasswordValid($user, $old_password)){
-            $this->addFlash('error', 'L\'ancien mot de passe est incorrect');
-            return $this->redirectToRoute("admin_show_user",["id"=>$id]);
-        }
-
         $user->setPassword($passwordEncoder->hashPassword($user, $new_password));
 
         $userRepository->save($user);
-        return $this->redirectToRoute("admin_show_user",["id"=>$id]);
+        return $this->redirect("/admin/users");
         }catch(\Exception $e){
             $this->addFlash('error', 'Une erreur est survenue');
-            return $this->redirectToRoute("admin_show_user",["id"=>$id]);
+            return $this->redirect("/admin/users");
         }
     }
 

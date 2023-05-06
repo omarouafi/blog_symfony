@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter Tags{% endblock %}
+
+
+{% block body %}
+<div class="user-dashboard">
+    {% include '/utils/user-side-bar.html.twig' %}
+
+    <div class="profile-container">
+        <h1>Tags</h1>
+        <div class="profile-form">
+            <form action="/admin/tag/add" method="post" enctype="multipart/form-data">
+                <div class="form-block">
+                    <label for="mot">Mot:</label>
+                    <input class="form-input" type="text" id="mot" name="mot" value="{{ mot }}" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary" id="password-submit">Ajouter</button>
+            </form>
+
+        </div>
+
+        <script>
+
+        </script>
+        {% endblock %}

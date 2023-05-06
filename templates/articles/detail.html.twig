@@ -10,7 +10,7 @@
         <div class="article-author">
             <div class="article-author-photo">
                 <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
-                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                    onerror="this.src='https://www.gravatar.com/avatar/fwepj@sa.cp?s=200&d=mp'">
             </div>
             <div class="article-author-info">
                 <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
@@ -45,7 +45,7 @@
                 <div class="article-author">
                     <div class="article-author-photo">
                         <img src="{{ app.request.attributes.get('user').photo }}" alt="image"
-                            onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                            onerror="this.src='https://www.gravatar.com/avatar/fwepj@sa.cp?s=200&d=mp'">
                     </div>
                     <div class="article-author-info">
                         <p>{{ app.request.attributes.get('user').prenom }} {{ app.request.attributes.get('user').nom
@@ -68,7 +68,7 @@
                 <div class="article-author">
                     <div class="article-author-photo">
                         <img src="{{ comment.getAuthor().getPhoto() }}" alt="image"
-                            onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                            onerror="this.src='https://www.gravatar.com/avatar/fwepj@sa.cp?s=200&d=mp'">
                     </div>
                     <div class="article-author-info">
                         <p>{{ comment.getAuthor().getPrenom() }} {{ comment.getAuthor().getNom() }}</p>

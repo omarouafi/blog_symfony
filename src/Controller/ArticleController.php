@@ -40,9 +40,31 @@ class ArticleController extends AbstractController
             
         );
 
-        
-
         return $this->render('articles/articles-list.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
+     /**
+    * @Route("/admin/articles", name="admin_list_articles", methods={"GET"})
+    */
+    public function admin_articles(Request $request, CustomAuthenticator $auth, ArticleRepository $articleRepository,PaginatorInterface $paginator): Response
+    {
+        $articlesQuery=null;
+        $query = $request->query->get('q');
+        if ($query) {
+            $articlesQuery = $articleRepository->searchByTitleContentAuthor($query);
+        } else {
+            $articlesQuery = $articleRepository->findAllWithAuthorCommentsTags();
+        }
+
+        $articles = $paginator->paginate(
+            $articlesQuery,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10),
+            
+        );
+        return $this->render('articles/admin-articles-list.html.twig', [
             'articles' => $articles,
         ]);
     }
@@ -221,5 +243,62 @@ public function article_modifier_post(Request $request ,Article $article,Article
     {
         $articleRepository->remove($article, true);
         return $this->redirectToRoute('list_articles');        
+    }
+   /**
+ * @Route("/admin/article/{id}/supprimer", name="admin_article_supprimer", methods={"GET"})
+ */
+    public function admin_article_supprimer(Request $request ,Article $article,ArticleRepository $articleRepository)
+    {
+        $articleRepository->remove($article, true);
+        return $this->redirectToRoute('admin_list_articles');        
+    }
+   /**
+ * @Route("/admin/article/{id}/modifier", name="admin_article_modifier", methods={"GET"})
+ */
+    public function admin_article_modifier(Request $request ,Article $article,ArticleRepository $articleRepository, TagRepository $tagRepository)
+    {
+        $error = "";
+        $tags = $tagRepository->findAll();
+        $converter = new HtmlConverter();
+        $markdownContent = $converter->convert($article->getContent());
+
+       
+
+        return $this->render('articles/admin-article-edit.html.twig', [
+            'error' => $error,
+            'article' => $article,
+            'markdownContent' => $markdownContent,
+            'image' => '',
+            "tags" => $tags
+        ]);    
+    }
+
+     /**
+    * @Route("/admin/article/{id}/modifier", name="admin_article_modifier_post", methods={"POST"})
+    */
+    public function admin_article_modifier_post(Request $request ,Article $article,ArticleRepository $articleRepository, TagRepository $tagRepository)
+    {
+        $title = $request->request->get('title');
+        $content = $request->request->get('content');
+        $article->setTitle($title);
+        $article->setContent($content);
+        $file = $request->files->get('image');
+        if ($file) {
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move($this->getParameter('uploads_directory'), $fileName);
+            $article->setImage('/uploads/'.$fileName);
+        }
+        $selectedTags = [];
+        $tags = $request->get('tags', []);
+        foreach ($tags as $tagId) {
+            $tag = $tagRepository->find($tagId);
+            if ($tag) {
+                $selectedTags[] = $tag;
+            }
+        }
+        $selectedTags = new ArrayCollection($selectedTags);
+        $article->setTags($selectedTags);
+        $articleRepository->save($article, true);
+        return $this->redirectToRoute('admin_list_articles');
     }
 }

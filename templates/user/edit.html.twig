@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Utilisateur #{{user.id}}{% endblock %}
 
 {% block body %}
 <div class="user-dashboard">
@@ -9,9 +9,9 @@
 
 
     <div class="profile-container">
-        <h1>Profile</h1>
+        <h1>Utilisateur #{{user.id}}</h1>
         <div class="profile-container-item">
-            <form action="/user/edit/me" method="POST" enctype="multipart/form-data">
+            <form action="/admin/user/{{user.id}}/edit" method="POST" enctype="multipart/form-data">
                 <div>
                     <label for="photo" class="user-photo-label">
                         <img src="{{ user.photo }}" alt="photo de profile" width="100px" id="photo-preview"
@@ -36,7 +36,7 @@
         </div>
         <div class="profile-container-item">
             <h2>Changer l'email</h2>
-            <form action="/update-my-email" method="POST">
+            <form action="/admin/user/{{user.id}}/update-email" method="POST">
                 <div class="form-block">
                     <label for="email">Email:</label>
                     <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}" required>
@@ -46,22 +46,17 @@
         </div>
         <div class="profile-container-item">
             <h2>Changer le mot de passe</h2>
-            <form action="/update-my-password" method="POST">
-                <div class="form-block">
-                    <label for="old_password">Ancien mot de passe:</label>
-                    <input class="form-input" type="password" id="old_password" name="old_password" required>
-                </div>
+            <form action="/admin/user/{{user.id}}/update-password" method="POST">
+              
                 <div class="form-block">
                     <label for="new_password">Nouveau mot de passe:</label>
-                    <input class="form-input" type="password" id="new_password" name="new_password" required>
+                    <input class="form-input" type="password" id="new_password" name="password" required>
                 </div>
                 <div class="form-block">
                     <label for="confirm_password">Confirmez le nouveau mot de passe:</label>
                     <input class="form-input" type="password" id="confirm_password" name="confirm_password" required>
                 </div>
-                {% if errors is defined and errors.password %}
-                <p style="color: red">{{ errors.password }}</p>
-                {% endif %}
+                <p style="color: red"></p>
                 <button class="btn btn-primary" id="password-submit" type="submit">Sauvegarder les changements</button>
             </form>
         </div>

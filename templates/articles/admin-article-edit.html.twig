@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<link rel="stylesheet" href="/styles/articles-custom.css" crossorigin="anonymous" />
+<div class="container">
+
+
+    <div class="article-container new-article-page ">
+
+        <h1>Modifier Article</h1>
+
+        {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/admin/article/{{ article.id }}/modifier" enctype="multipart/form-data">
+
+
+            <div class="form-block">
+
+                <label for="image">
+                    <p type="button" class="btn btn-secondary">Cliquez ici pour ajouter une image</p>
+                </label>
+                <input type="file" style="display: none;" name="image" id="image" value="{{ image }}"
+                    onerror="this.src='https://via.placeholder.com/150'">
+                <img id="image-preview" src="{{article.image}}" alt="Image preview"
+                    onerror="this.src='https://via.placeholder.com/150'">
+            </div>
+
+            <div class="form-block">
+                <label for="title">Title:</label>
+                <input class="form-input" type="text" id="title" name="title" value="{{ article.title }}" required
+                    autofocus>
+            </div>
+            <div class="form-block">
+                <label for="markdown-editor">Content:</label>
+                <textarea class="form-input" style="resize: none;" rows="15" id="markdown-editor" name="content_text"
+                    required>{{ markdownContent }}</textarea>
+            </div>
+            <div class="form-block">
+                <label for="tags">Tags:</label>
+                <select class="form-input" id="tags" name="tags[]" multiple required>
+                    {% for tag in tags %}
+                    <option value="{{ tag.id }}" {% if article.tags.contains(tag) %} selected {% endif %}>{{ tag.mot }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-primary" type="submit">Save changes</button>
+            </div>
+            <textarea name="content" hidden id="markdown-html" id="" cols="30"
+                rows="10">{{ article.content }}</textarea>
+        </form>
+
+        <div class="article-preview">
+            <h2>Aperçu</h2>
+            <div id="markdown-preview">{{ article.content|raw }}</div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.0/marked.min.js"></script>
+<script>
+    const editor = document.getElementById('markdown-editor');
+    const preview = document.getElementById('markdown-preview');
+    const content = document.getElementById('markdown-html');
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+
+    editor.addEventListener('input', function () {
+        const markdown = editor.value;
+        const html = marked(markdown);
+        preview.innerHTML = html;
+        content.innerHTML = html;
+    });
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                imagePreview.style.display = 'block';
+                imagePreview.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+{% endblock %}

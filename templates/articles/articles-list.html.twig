@@ -21,7 +21,7 @@
         <div class="article-author">
             <div class="article-author-photo">
                 <img src="{{ article.getAuthor().getPhoto() }}" alt="image"
-                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                    onerror="this.src='https://www.gravatar.com/avatar/fwepj@sa.cp?s=200&d=mp'">
             </div>
             <div class="article-author-info">
                 <p>{{ article.getAuthor().getPrenom() }} {{ article.getAuthor().getNom() }}</p>
@@ -38,15 +38,15 @@
                 </div>
                 <div class="article-content">
                     {% if article.content|length > 200 %}
-                    <p>{{ article.content|slice(0, 200) }}...</p>
+                    <p>{{ article.getSummary()|slice(0, 200) }}...</p>
                     {% else %}
-                    <p>{{ article.content }}</p>
+                    <p>{{ article.getSummary() }}</p>
                     {% endif %}
                 </div>
             </div>
             <div class="article-image">
                 <img src="{{ article.image }}" alt="image"
-                    onerror="this.src='https://www.freeiconspng.com/uploads/no-image-icon-15.png'">
+                    onerror="this.src='https://www.gravatar.com/avatar/fwepj@sa.cp?s=200&d=mp'">
             </div>
         </a>
     </div>

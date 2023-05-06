@@ -308,6 +308,7 @@ a {
   font-family: inherit;
   font-family: "Roboto Slab", serif;
   color: #29292ca3;
+  min-width: 500px;
 }
 
 .article-content h1 {

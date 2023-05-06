@@ -57,5 +57,17 @@ class CommentController extends AbstractController
             'comments' => $comments,
         ]);
     }
+     /**
+    * @Route("/admin/comments", name="admin_comments", methods={"GET"})
+    */
+    public function admin_comments(Request $request, CustomAuthenticator $auth, CommentRepository $commentRepository, UserRepository $userRepository): Response
+    {
+        $user = $request->attributes->get('user');
+        $user = $userRepository->find($user['id']);
+        $comments = $commentRepository->findAllWithArticleAndAuthor();
+        return $this->render('comment/admin-comments-list.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
 
 }

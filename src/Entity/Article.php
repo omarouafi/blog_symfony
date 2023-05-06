@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Soundasleep\Html2Text;
+use GuzzleHttp\Client;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -30,6 +30,10 @@ class Article
     private ?string $image = null;
 
   
+
+
+
+  
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "author_id", referencedColumnName: "id")]
     private ?User $author = null;
@@ -50,6 +54,20 @@ class Article
     {
         $this->comment = new ArrayCollection();
         $this->tags = new ArrayCollection();
+    }
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $summary = null;
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary(string $summary): self
+    {
+        $this->summary = $summary;
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
@@ -214,8 +232,33 @@ class Article
     public function getContentPlainText(): string
     {
         $html = $this->getContent();
-        $html = new Html2Text('Hello, &quot;<b>world</b>&quot;');
-        $plainText = $htmlToText->getText();
-        return $plainText;
+        $html = html_entity_decode(strip_tags($html));
+        return $html;
+    }
+    static public function getContentSummary(Article $article): string
+{
+    $html = $article->getContent();
+    $html = html_entity_decode(strip_tags($html));
+    try {
+
+    $client = new Client([
+        'headers' => [
+            'Authorization' => 'Bearer 49ba7d347d5dad2a8a45ac9c576badf51a231f69',
+            'Content-Type' => 'application/json'
+        ]
+    ]);
+
+    $response = $client->post('https://api.nlpcloud.io/v1/bart-large-cnn/summarization', [
+        'json' => [
+            'text' => $html,
+        ]
+    ]);
+
+    $responseData = json_decode($response->getBody()->getContents(), true);
+    return $responseData['summary_text'];
+    } catch (\Throwable $th) {
+        return $html;
+
+        }
     }
 }
